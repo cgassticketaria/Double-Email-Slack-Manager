@@ -1,0 +1,15 @@
+node_modules
+OUTPUTS
+.env
+credentials-11.json
+credentials-ds.json
+db.js
+dbSalesMatcher.js
+generate_token.js
+getUrls.js
+gmailreader.js
+pull-emails.bat
+slack.js
+token-11.json
+token-ds.json
+update.bat
