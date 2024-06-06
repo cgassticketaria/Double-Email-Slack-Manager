@@ -12,7 +12,7 @@ const botApp = new App({
     appToken: process.env.SLACK_APP_TOKEN
 });
 
-//const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 const channelId = process.env.SLACK_CHANNEL_ID;
 
