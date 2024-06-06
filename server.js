@@ -189,9 +189,6 @@ app.get('/', async (req, res) => {
 // Start the webhook server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  if(isFetching) {
-      console.log(`Server is now listening for incoming messages!`);
-  }
 });
 
 // Launch the bot/app
