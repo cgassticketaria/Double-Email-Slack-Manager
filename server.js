@@ -186,10 +186,10 @@ app.get('/', async (req, res) => {
   res.status(200).send('OK');
 });
 
-// Start the webhook server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// // Start the webhook server
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
 
 // Launch the bot/app
 (async () => {
