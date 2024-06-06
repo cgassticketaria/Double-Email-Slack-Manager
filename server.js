@@ -123,20 +123,24 @@ botApp.action('action_selection', async ({ ack, body, client }) => {
         if (isButtonBlockPresent) {
           blocks.pop();
         };
+
+        // Check if the "Sales Order Number" input block is already present
+        const isInputBlockPresent = blocks.some(block => {
+          return (
+            block.type === "input" &&
+            block.label &&
+            block.label.text === "Sales Order Number"
+          );
+        });
+
+        if (isInputBlockPresent) {
+          blocks.pop();
+        };
         
         // Check if the action has a selected_option property
         if (action.selected_option) {
           const optionValue = action.selected_option.value;
-    
-          // Check if the "Sales Order Number" input block is already present
-          const isInputBlockPresent = blocks.some(block => {
-            return (
-              block.type === "input" &&
-              block.label &&
-              block.label.text === "Sales Order Number"
-            );
-          });
-    
+  
           // If the input block is not already present and option is 2, push it to the blocks array
           if (optionValue === "2" && !isInputBlockPresent) {
             blocks.push({
