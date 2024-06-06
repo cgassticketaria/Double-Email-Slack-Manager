@@ -1,6 +1,8 @@
 require('dotenv').config();
 const { App } = require('@slack/bolt');
 const axios = require('axios');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 const botApp = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -10,6 +12,8 @@ const botApp = new App({
 });
 
 const PORT = process.env.PORT || 8080;
+const app = express();
+app.use(bodyParser.json());
 
 const channelId = process.env.SLACK_CHANNEL_ID;
 
@@ -175,6 +179,19 @@ botApp.action('action_selection', async ({ ack, body, client }) => {
       } catch (error) {
         console.error('Error:', error);
       }
+});
+
+// Define a route to trigger the API call
+app.get('/', async (req, res) => { 
+  res.status(200).send('OK');
+});
+
+// Start the webhook server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  if(isFetching) {
+      console.log(`Server is now listening for incoming messages!`);
+  }
 });
 
 // Launch the bot/app
