@@ -3,6 +3,7 @@ const { App } = require('@slack/bolt');
 const axios = require('axios');
 const express = require('express');
 const bodyParser = require('body-parser');
+const cron = require('node-cron');
 
 const botApp = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -12,8 +13,6 @@ const botApp = new App({
 });
 
 const PORT = process.env.PORT || 8080;
-const app = express();
-app.use(bodyParser.json());
 
 const channelId = process.env.SLACK_CHANNEL_ID;
 
@@ -185,19 +184,20 @@ botApp.action('action_selection', async ({ ack, body, client }) => {
       }
 });
 
-// Define a route to trigger the API call
-app.get('/', async (req, res) => { 
-  res.status(200).send('OK');
-});
-
-// // Start the webhook server
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
-
 // Launch the bot/app
 (async () => {
     // Start your app
     await botApp.start(PORT);
     console.log('⚡️ Bolt app is running!');
 })();
+
+// Cron job to check the time every 10 minutes
+cron.schedule('*/10 * * * *', () => {
+  console.log("Health Check")
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  if (hours === 0 && minutes < 10) {
+      console.log("Health check good");
+  }
+});
