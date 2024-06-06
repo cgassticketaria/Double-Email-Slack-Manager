@@ -41,6 +41,18 @@ botApp.action('verified_button_click', async ({ ack, body, client }) => {
               salesOrderNumber = body.state.values[key]['plain_text_input-action'].value;
             }
         });
+
+        // Check if the "Sales Order Number" input block is already present
+        const isInputBlockPresent = blocks.some(block => {
+          return (
+            block.type === "input" &&
+            block.label &&
+            block.label.text === "Sales Order Number"
+          );
+        });
+
+        // If input field is left blank and confirm is clicked
+        if (isInputBlockPresent && !salesOrderNumber) return;
     
         blocks = [];
         blocks.push(
