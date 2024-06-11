@@ -16,8 +16,6 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(bodyParser.json());
 
-const channelId = process.env.SLACK_CHANNEL_ID;
-
 // Define your Slack actions and listeners
 botApp.action('verified_button_click', async ({ ack, body, client }) => {
     try {
