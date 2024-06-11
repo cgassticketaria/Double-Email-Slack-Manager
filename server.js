@@ -24,7 +24,7 @@ botApp.action('verified_button_click', async ({ ack, body, client }) => {
         await ack();
         let blocks = body.message.blocks;
         let fileId = null;
-        if(body.message.metadata.event_payload.file_id) {
+        if (body.message.metadata && body.message.metadata.event_payload && body.message.metadata.event_payload.file_id) {
             fileId = body.message.metadata.event_payload.file_id;
         }
     
