@@ -26,7 +26,7 @@ botApp.action('verified_button_click', async ({ ack, body, client }) => {
             fileId = body.message.metadata.event_payload.file_id;
         }
     
-        const orderNumber = blocks[2].fields[0].text.split(":*\n")[1];
+        const orderNumber = blocks[2].text.text.split(" \n")[0];
     
         const userId = body.user.id;
         const userInfo = await client.users.info({ user: userId });
@@ -64,9 +64,9 @@ botApp.action('verified_button_click', async ({ ack, body, client }) => {
         ];
     
         await axios.post(body.response_url, { blocks });
-        if (fileId) {
-            await botApp.client.files.delete({ file: fileId });
-        }
+        // if (fileId) {
+        //     await botApp.client.files.delete({ file: fileId });
+        // }
     
     } catch (error) {
         console.error('Error handling verified_button_click action:', error);
