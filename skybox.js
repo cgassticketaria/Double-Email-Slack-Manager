@@ -17,7 +17,6 @@ const headers = {
 };
 
 async function createPurchase(skyboxData, userEmail) {
-
   const data = {
     vendorId: 1427,
     eventId: skyboxData.vividId,
@@ -39,7 +38,7 @@ async function createPurchase(skyboxData, userEmail) {
           taxedCost: skyboxData.totalCost,
           quantity: skyboxData.qty,
           stockType: skyboxData.stockType,
-          seatType: `${skyboxData.highSeat - skyboxData.lowSeat + 1 == skyboxData.qty ? "CONSECUTIVE" : "ALTERNATING"}`,
+          seatType: (skyboxData.highSeat - skyboxData.lowSeat + 1) === skyboxData.qty ? "CONSECUTIVE" : "ALTERNATING",
           splitType: "DEFAULT",
           customSplit: undefined,
           notes: skyboxData.externalRef,
@@ -47,32 +46,29 @@ async function createPurchase(skyboxData, userEmail) {
           tags: skyboxData.inventoryTag,
           zoneSeating: false,
           listPrice: 0,
-          inHandDate: new Date().toISOString().split('T')[0],
+          inHandDate: skyboxData.inHandDate.toISOString().split('T')[0],
           hideSeatNumbers: true,
           broadcast: skyboxData.broadcast,
-          tickets: skyboxData.tickets.map((t) => {
-            return {
-              row: t.row,
-              seatNumber: t.seat,
-              status: t.status,
-            };
-          }),
+          tickets: skyboxData.tickets.map((t) => ({
+            row: t.row,
+            seatNumber: t.seat,
+            status: t.status,
+          })),
         },
       },
     ],
   };
 
-  console.log(data)
-  console.log(data.lines[0].inventory)
-
-  // axios.post(url, data, { headers: headers })
-  //   .then(response => {
-  //     console.log('Response data:', response.data);
-  //   })
-  //   .catch(error => {
-  //     console.error('Error making POST request:', error);
-  //   });
+  axios.post(url, data, { headers })
+    .then(response => {
+      console.log('Response data:', response.data);
+      console.log( response.data.id)
+      let result = response.data.id
+      return result
+    })
+    .catch(error => {
+      console.error('Error making POST request:', error.response.data);
+    });
 }
 
 module.exports = { createPurchase };
-

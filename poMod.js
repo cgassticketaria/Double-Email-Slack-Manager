@@ -4,12 +4,13 @@ const { createPurchase } = require("./skybox");
 async function poModal(body, client, blocks) {
 
     const salesData = body.message.metadata.event_payload.record;
-    const seatRange = salesData.seat.split('-').map(seat => seat.trim());
+    const seatRange = salesData.seat.split('-').map(seat => seat.replace(/[^0-9]/g, '').trim());
     const lowSeat = seatRange[0];
     const highSeat = seatRange[seatRange.length - 1];
     const vividId = body.message.metadata.event_payload.vividId;
     const country = body.message.metadata.event_payload.country;
     const ccData = body.message.metadata.event_payload.ccData;
+    const record = body.message.metadata.event_payload.record;
     const ccLast4 = ccData.last4;
 
     let ccType;
@@ -219,7 +220,7 @@ async function poModal(body, client, blocks) {
                                 type: "plain_text",
                                 text: "Mobile Transfer"
                             },
-                            value: "Mobile Transfer"
+                            value: "MOBILE_TRANSFER"
                         },
                         options: [
                             {
@@ -227,49 +228,49 @@ async function poModal(body, client, blocks) {
                                     type: "plain_text",
                                     text: "E-Tickets"
                                 },
-                                value: "E-Tickets"
+                                value: "ELECTRONIC"
                             },
                             {
                                 text: {
                                     type: "plain_text",
                                     text: "Flash"
                                 },
-                                value: "Flash"
+                                value: "FLASH"
                             },
                             {
                                 text: {
                                     type: "plain_text",
                                     text: "Hard"
                                 },
-                                value: "Hard"
+                                value: "HARD"
                             },
                             {
                                 text: {
                                     type: "plain_text",
                                     text: "Mobile QR"
                                 },
-                                value: "Mobile QR"
+                                value: "MOBILE_SCREENCAP"
                             },
                             {
                                 text: {
                                     type: "plain_text",
                                     text: "Mobile Transfer"
                                 },
-                                value: "Mobile Transfer"
+                                value: "MOBILE_TRANSFER"
                             },
                             {
                                 text: {
                                     type: "plain_text",
                                     text: "Paperless Gift Card"
                                 },
-                                value: "Paperless Gift Card"
+                                value: "PAPERLESS_CARD"
                             },
                             {
                                 text: {
                                     type: "plain_text",
                                     text: "Paperless Walk-In"
                                 },
-                                value: "Paperless Walk-In"
+                                value: "PAPERLESS"
                             }
                         ],
                         placeholder: {
@@ -306,7 +307,7 @@ async function poModal(body, client, blocks) {
                     element: {
                         type: "plain_text_input",
                         action_id: "tags_input",
-                        initial_value: `${ccType}_${ccLast4}`,
+                        initial_value: `${ccType}_${ccLast4} DB`,
                         placeholder: {
                             type: "plain_text",
                             text: "Enter tags"
@@ -337,7 +338,7 @@ async function poModal(body, client, blocks) {
                     }
                 }
             ],
-            private_metadata: JSON.stringify({ channel: body.channel.id, ts: body.message.ts, salesData: salesData, ccData: ccData, vividId: vividId, country: country}) // Store the channel ID and ts of the original message
+            private_metadata: JSON.stringify({ channel: body.channel.id, ts: body.message.ts, salesData: salesData, ccData: ccData, vividId: vividId, country: country, record: record}) // Store the channel ID and ts of the original message
         };
 
         // Open the modal
@@ -356,6 +357,10 @@ async function handleViewSubmission(payload, client) {
     const metadata = JSON.parse(payload.view.private_metadata);
     const channelId = metadata.channel;
     const ts = metadata.ts;
+    const record = metadata.record;
+    const eventDate = new Date(record.eventDate)
+    const inHandDate = new Date(eventDate);
+    inHandDate.setDate(eventDate.getDate() - 1);
     const orderNumber = metadata.salesData.code;
     const vividId = metadata.vividId;
     const ccData = metadata.ccData;
@@ -385,6 +390,7 @@ async function handleViewSubmission(payload, client) {
         inventoryTag: values[keys[10]].tags_input.value,
         poTag: values[keys[11]].purchase_order_tags_input.value,
         currency: country == "CA" ? "CAD" : "USD",
+        inHandDate: inHandDate,
     };
 
     // Create the tickets array and add it to skyboxData
