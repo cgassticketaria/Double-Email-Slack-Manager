@@ -410,33 +410,54 @@ async function handleViewSubmission(payload, client) {
     skyboxData.tickets = tickets;
 
     // Send the PO and return the SKybox reference number
-    const skyboxRef = await createPurchase(skyboxData, userEmail)
+    const {success, result} = await createPurchase(skyboxData, userEmail);
 
-    const blocks = [
-        { "type": "divider" },
-        {
+    if (result && success !== false) {
+        blocks = [
+          { "type": "divider" },
+          {
             "type": "header",
             "text": { "type": "plain_text", "text": `✅ ${orderNumber} (resolved)`, "emoji": true }
-        },
-        {
+          },
+          {
             "type": "section",
             "text": {
-                "type": "mrkdwn",
-                "text": `*Double Buy*\nRef: ${skyboxRef}\nhttps://skybox.vividseats.com/purchases/${skyboxRef}`
+              "type": "mrkdwn",
+              "text": `*Double Buy*\nRef: ${result}\nhttps://skybox.vividseats.com/purchases/${result}`
             }
-        },
-        {
+          },
+          {
             "type": "context",
             "elements": [{ "type": "mrkdwn", "text": `*Verified by: ${username}` }]
-        }
-    ];
+          }
+        ];
+    } else {
+        blocks = [
+          { "type": "divider" },
+          {
+            "type": "header",
+            "text": { "type": "plain_text", "text": `❌ ${orderNumber} (not-resolved)`, "emoji": true }
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `*Error*: ${result}`
+            }
+          },
+          {
+            "type": "context",
+            "elements": [{ "type": "mrkdwn", "text": `*Please verify manually and mark with emoji when resolved` }]
+          }
+        ];
+    }
 
     await client.chat.update({
         token: process.env.SLACK_BOT_TOKEN,
         channel: channelId,
         ts: ts,
         blocks: blocks,
-        text: `✅ ${orderNumber} (resolved) \n *Double Buy* \nPO in SkyBox\nRef: ${skyboxRef}`
+        text: `✅ ${orderNumber} (resolved) \n *Double Buy* \nPO in SkyBox\nRef: ${result}`
     });
 }
 

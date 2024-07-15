@@ -59,16 +59,15 @@ async function createPurchase(skyboxData, userEmail) {
     ],
   };
 
-  axios.post(url, data, { headers })
-    .then(response => {
-      console.log('Response data:', response.data);
-      console.log( response.data.id)
-      let result = response.data.id
-      return result
-    })
-    .catch(error => {
-      console.error('Error making POST request:', error.response.data);
-    });
+  try {
+    const response = await axios.post(url, data, { headers });
+    console.log(response.data.id);
+    return { success: true, result: response.data.id };
+  } catch (error) {
+    console.error('Error making POST request:', error.response.data[0].message);
+    return { success: false, result: error.response.data[0].message };
+  }
+
 }
 
 module.exports = { createPurchase };
