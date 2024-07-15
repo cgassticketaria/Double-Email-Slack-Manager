@@ -409,7 +409,7 @@ async function handleViewSubmission(payload, client) {
 
     skyboxData.tickets = tickets;
 
-    // Send the PO and return the SKybox reference number
+    // Send the PO and return the Skybox reference number
     const {success, result} = await createPurchase(skyboxData, userEmail);
 
     if (result && success !== false) {
