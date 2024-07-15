@@ -25,7 +25,7 @@ async function poModal(body, client, blocks) {
     }
 
     try {
-        // Generate the modal payload for PO
+        // Generate the modal payload for POing
         const modalPayload = {
             type: "modal",
             callback_id: "send_po",
