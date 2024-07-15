@@ -14,17 +14,17 @@ async function verifiedButtonClick(body, client) {
     const userInfo = await client.users.info({ user: userId });
     const username = userInfo.user.real_name;
 
-    let salesOrderNumber = null;
+    let refNumber = null;
     const keys = Object.keys(body.state.values);
     keys.forEach(key => {
         if (body.state.values[key]['plain_text_input-action']) {
-            salesOrderNumber = body.state.values[key]['plain_text_input-action'].value;
+            refNumber = body.state.values[key]['plain_text_input-action'].value;
         }
     });
 
     const isInputBlockPresent = blocks.some(block => block.type === "input" && block.label && block.label.text === "Sales Order Number");
 
-    if (isInputBlockPresent && !salesOrderNumber) return;
+    if (isInputBlockPresent && !refNumber) return;
 
     blocks = [
         { "type": "divider" },
@@ -36,7 +36,7 @@ async function verifiedButtonClick(body, client) {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": `✔️ *Not A Double Buy* ✔️\nRef: ${salesOrderNumber}\nhttps://skybox.vividseats.com/purchases/${salesOrderNumber}`
+                "text": `✔️ *Not A Double Buy* ✔️\nRef: ${refNumber}`
             }
         },
         {
