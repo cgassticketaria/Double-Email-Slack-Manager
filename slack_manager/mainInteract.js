@@ -82,7 +82,6 @@ async function actionSelection(body, client) {
                     }]
                 });
             } else if (optionValue === "1") {
-                if (isInputBlockPresent) blocks.pop();
                 await poModal(body, client, blocks);
             }
         }

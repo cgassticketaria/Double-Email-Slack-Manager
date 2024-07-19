@@ -2,9 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
-const { verifiedButtonClick, actionSelection } = require('./mainInteract');
+const { verifiedButtonClick, actionSelection } = require('./slack_manager/mainInteract');
 const { App } = require('@slack/bolt');
-const { handleViewSubmission } = require('./poMod');
+const { handleViewSubmission } = require('./slack_manager/poMod');
 
 const botApp = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
